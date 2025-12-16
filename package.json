@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev" : "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
@@ -16,6 +16,8 @@
   "author": "Shreedhar",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "env": "^0.0.2",
     "express": "^5.2.1",
