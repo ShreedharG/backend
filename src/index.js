@@ -1,20 +1,34 @@
 import dotenv from "dotenv";
-import {app} from "./app.js";
-dotenv.config({
-  path: "./.env",
-});
+dotenv.config();
 
+import {app} from "./app.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "./utils/cloudinary.js";
 import connectDb from "./db/index.js";
 
 (connectDb)()
-.then(() => {
+.then(async () => {
+
+  console.log("Testing Cloudinary connection");
+  const response = await uploadOnCloudinary("./test.png");
+
+  if(response){
+    console.log("\n********Successfull Cloudinary connection! **************");
+    console.log("Upload Success:", response.secure_url);
+    await deleteFromCloudinary(response.public_id);  
+  }
+
+  else {
+    console.log("Upload failed")
+  }
+
   app.listen(process.env.PORT || 8000, () => {
     console.log(`Server is running on port ${process.env.PORT || 8000}`);
-  })
+  });
+
 })
 .catch((error) => {
   console.log("Error in DB connection!!!", error);
-})
+});
 
 
 
