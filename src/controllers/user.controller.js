@@ -19,7 +19,7 @@ const registerUser = asyncHandler( async(req, res) => {
 
     // check for empty fields
     if (
-        [fullName, email, username, password].some((field) => field?.trim() === "")
+        [fullName, email, username, password].some((field) => !field || field?.trim() === "")
     ){
         throw new ApiError(400, "All fields are required");
     }
@@ -34,18 +34,17 @@ const registerUser = asyncHandler( async(req, res) => {
     }
 
     // check for images
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
-    if(!avatarLocalPath){
-        throw new ApiError(400, "Avatar image is required");
+    let avatar, coverImage;
+    
+    if(avatarLocalPath){
+        avatar = await uploadOnCloudinary(avatarLocalPath);
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-
-    if (!avatar){
-        throw new ApiError(500, "Error while uploading avatar image");
+    if(coverImageLocalPath){
+        coverImage = await uploadOnCloudinary(coverImageLocalPath);
     }
 
     const user = await User.create({
